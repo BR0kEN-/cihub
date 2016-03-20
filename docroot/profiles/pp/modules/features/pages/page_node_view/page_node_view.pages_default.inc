@@ -1,25 +1,25 @@
 <?php
 /**
  * @file
- * page_user_view.pages_default.inc
+ * page_node_view.pages_default.inc
  */
 
 /**
  * Implements hook_default_page_manager_handlers().
  */
-function page_user_view_default_page_manager_handlers() {
+function page_node_view_default_page_manager_handlers() {
   $export = array();
 
   $handler = new stdClass();
   $handler->disabled = FALSE; /* Edit this to true to make a default handler disabled initially */
   $handler->api_version = 1;
-  $handler->name = 'user';
-  $handler->task = 'user_view';
+  $handler->name = 'node_server';
+  $handler->task = 'node_view';
   $handler->subtask = '';
   $handler->handler = 'panel_context';
   $handler->weight = 0;
   $handler->conf = array(
-    'title' => 'Default',
+    'title' => 'Server',
     'no_blocks' => 1,
     'pipeline' => 'standard',
     'body_classes_to_remove' => '',
@@ -29,14 +29,29 @@ function page_user_view_default_page_manager_handlers() {
     'contexts' => array(),
     'relationships' => array(),
     'name' => '',
+    'access' => array(
+      'plugins' => array(
+        0 => array(
+          'name' => 'node_type',
+          'settings' => array(
+            'type' => array(
+              'server' => 'server',
+            ),
+          ),
+          'context' => 'argument_entity_id:node_1',
+          'not' => FALSE,
+        ),
+      ),
+      'logic' => 'and',
+    ),
   );
   $display = new panels_display();
   $display->layout = 'flexible';
   $display->layout_settings = array();
   $display->panel_settings = array(
     'style_settings' => array(
-      'default' => NULL,
       'center' => NULL,
+      'default' => NULL,
     ),
     'style' => 'naked',
     'center' => array(
@@ -44,60 +59,52 @@ function page_user_view_default_page_manager_handlers() {
     ),
   );
   $display->cache = array();
-  $display->title = '%user:name';
-  $display->uuid = '7eaa8a62-559f-4bbd-8ba9-2c4a300b8ab7';
+  $display->title = '';
+  $display->uuid = '7f3518a6-d58a-4251-ab6e-78258ccd2160';
   $display->content = array();
   $display->panels = array();
     $pane = new stdClass();
-    $pane->pid = 'new-39dc72f9-390c-43f3-b3d4-b4f6e461ba12';
+    $pane->pid = 'new-4236a565-f66f-4af5-9ee2-316291d21350';
     $pane->panel = 'center';
-    $pane->type = 'custom';
-    $pane->subtype = 'custom';
+    $pane->type = 'entity_field';
+    $pane->subtype = 'node:ansible_host';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'admin_title' => '',
-      'title' => '',
-      'body' => '<p><a href="/node/add/server">Add server</a></p>
-',
-      'format' => 'wysiwyg',
-      'substitute' => 1,
+      'label' => 'hidden',
+      'formatter' => 'text_default',
+      'delta_limit' => 0,
+      'delta_offset' => '0',
+      'delta_reversed' => FALSE,
+      'formatter_settings' => array(),
+      'context' => 'argument_entity_id:node_1',
+      'override_title' => 0,
+      'override_title_text' => '',
+      'override_title_heading' => 'h2',
     );
     $pane->cache = array();
     $pane->style = array(
+      'style' => 'naked',
       'settings' => NULL,
     );
     $pane->css = array();
     $pane->extras = array();
     $pane->position = 0;
     $pane->locks = array();
-    $pane->uuid = '39dc72f9-390c-43f3-b3d4-b4f6e461ba12';
-    $display->content['new-39dc72f9-390c-43f3-b3d4-b4f6e461ba12'] = $pane;
-    $display->panels['center'][0] = 'new-39dc72f9-390c-43f3-b3d4-b4f6e461ba12';
+    $pane->uuid = '4236a565-f66f-4af5-9ee2-316291d21350';
+    $display->content['new-4236a565-f66f-4af5-9ee2-316291d21350'] = $pane;
+    $display->panels['center'][0] = 'new-4236a565-f66f-4af5-9ee2-316291d21350';
     $pane = new stdClass();
-    $pane->pid = 'new-7fb46b96-f1ef-4685-ad85-9fb37fd60105';
+    $pane->pid = 'new-d583a6bd-93b0-4876-a736-6df5422389a1';
     $pane->panel = 'center';
-    $pane->type = 'views';
-    $pane->subtype = 'servers';
+    $pane->type = 'ctools_api';
+    $pane->subtype = 'CTools\\Plugins\\ContentTypes\\AnsibleProvision';
     $pane->shown = TRUE;
     $pane->access = array();
     $pane->configuration = array(
-      'override_pager_settings' => 0,
-      'use_pager' => 1,
-      'nodes_per_page' => '0',
-      'pager_id' => '0',
-      'offset' => '0',
-      'more_link' => 0,
-      'feed_icons' => 0,
-      'panel_args' => 0,
-      'link_to_view' => 0,
-      'args' => '',
-      'url' => '',
-      'display' => 'default',
-      'context' => array(
-        0 => 'argument_entity_id:user_1.uid',
-      ),
-      'override_title' => 0,
+      'theme' => 'default',
+      'context' => 'argument_entity_id:node_1',
+      'override_title' => TRUE,
       'override_title_text' => '',
       'override_title_heading' => 'h2',
     );
@@ -109,13 +116,13 @@ function page_user_view_default_page_manager_handlers() {
     $pane->extras = array();
     $pane->position = 1;
     $pane->locks = array();
-    $pane->uuid = '7fb46b96-f1ef-4685-ad85-9fb37fd60105';
-    $display->content['new-7fb46b96-f1ef-4685-ad85-9fb37fd60105'] = $pane;
-    $display->panels['center'][1] = 'new-7fb46b96-f1ef-4685-ad85-9fb37fd60105';
+    $pane->uuid = 'd583a6bd-93b0-4876-a736-6df5422389a1';
+    $display->content['new-d583a6bd-93b0-4876-a736-6df5422389a1'] = $pane;
+    $display->panels['center'][1] = 'new-d583a6bd-93b0-4876-a736-6df5422389a1';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
-  $export['user'] = $handler;
+  $export['node_server'] = $handler;
 
   return $export;
 }

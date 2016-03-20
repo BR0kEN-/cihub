@@ -47,7 +47,11 @@ class AnsibleProvision implements ContentTypesInterface {
    * {@inheritdoc}
    */
   public static function preprocess(array &$variables, array &$arguments, \ctools_context $context = NULL) {
-    $variables['form'] = drupal_get_form('ansible_provision_form', $context->data);
+    $variables['form'] = '';
+
+    if ($context) {
+      $variables['form'] = drupal_get_form('ansible_provision_form', $context->data);
+    }
   }
 
   /**

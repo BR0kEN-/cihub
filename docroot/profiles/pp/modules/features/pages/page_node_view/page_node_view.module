@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Node View feature.
+ */
+
+include_once 'page_node_view.features.inc';

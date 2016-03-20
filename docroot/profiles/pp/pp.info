@@ -53,6 +53,7 @@ dependencies[] = page_site_template
 dependencies[] = page_error
 dependencies[] = page_frontpage
 dependencies[] = page_user_view
+dependencies[] = page_node_view
 
 ; Mini Panels
 dependencies[] = mini_panel_header
