@@ -113,6 +113,32 @@ function page_user_view_default_page_manager_handlers() {
     $display->content['new-7fb46b96-f1ef-4685-ad85-9fb37fd60105'] = $pane;
     $display->panels['center'][1] = 'new-7fb46b96-f1ef-4685-ad85-9fb37fd60105';
     $pane = new stdClass();
+    $pane->pid = 'new-ee952637-70e0-4cb8-a803-af8b42949cef';
+    $pane->panel = 'center';
+    $pane->type = 'custom';
+    $pane->subtype = 'custom';
+    $pane->shown = TRUE;
+    $pane->access = array();
+    $pane->configuration = array(
+      'admin_title' => '',
+      'title' => '',
+      'body' => '<p><a href="/user/%user:uid/ssh-keys/add">Add key</a></p>
+',
+      'format' => 'wysiwyg',
+      'substitute' => 1,
+    );
+    $pane->cache = array();
+    $pane->style = array(
+      'settings' => NULL,
+    );
+    $pane->css = array();
+    $pane->extras = array();
+    $pane->position = 2;
+    $pane->locks = array();
+    $pane->uuid = 'ee952637-70e0-4cb8-a803-af8b42949cef';
+    $display->content['new-ee952637-70e0-4cb8-a803-af8b42949cef'] = $pane;
+    $display->panels['center'][2] = 'new-ee952637-70e0-4cb8-a803-af8b42949cef';
+    $pane = new stdClass();
     $pane->pid = 'new-ffb31d70-fcde-46de-8665-6061c174d838';
     $pane->panel = 'center';
     $pane->type = 'views';
@@ -145,11 +171,11 @@ function page_user_view_default_page_manager_handlers() {
     );
     $pane->css = array();
     $pane->extras = array();
-    $pane->position = 2;
+    $pane->position = 3;
     $pane->locks = array();
     $pane->uuid = 'ffb31d70-fcde-46de-8665-6061c174d838';
     $display->content['new-ffb31d70-fcde-46de-8665-6061c174d838'] = $pane;
-    $display->panels['center'][2] = 'new-ffb31d70-fcde-46de-8665-6061c174d838';
+    $display->panels['center'][3] = 'new-ffb31d70-fcde-46de-8665-6061c174d838';
   $display->hide_title = PANELS_TITLE_FIXED;
   $display->title_pane = '0';
   $handler->conf['display'] = $display;
