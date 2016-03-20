@@ -61,3 +61,4 @@ dependencies[] = mini_panel_footer
 
 ; Views
 dependencies[] = view_servers
+dependencies[] = view_ssh_keys

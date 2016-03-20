@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the SSH Keys feature.
+ */
+
+include_once 'view_ssh_keys.features.inc';
