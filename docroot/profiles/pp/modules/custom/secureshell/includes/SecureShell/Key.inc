@@ -367,6 +367,7 @@ class Key extends \Entity {
    */
   protected function setKey($type, $content) {
     $this->keys[$type] = $content;
+    $this->type = empty($this->keys[static::KEY_PRIVATE]) ? static::KEY_PUBLIC : static::KEY_PRIVATE;
   }
 
   /**
