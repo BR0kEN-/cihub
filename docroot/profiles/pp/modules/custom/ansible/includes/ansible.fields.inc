@@ -34,9 +34,8 @@ function ansible_fields_schema($entity_type, $bundle) {
   $fields['ansible_ssh_private_key_file'] = [
     'type' => 'entityreference',
     // Instance settings below.
-    'label' => 'SSH keys',
+    'label' => 'SSH key',
     'required' => TRUE,
-    'cardinality' => -1,
     'settings' => [
       'handler' => 'base',
       'target_type' => 'ssh_key',

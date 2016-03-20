@@ -53,6 +53,11 @@
 
     - include: tasks/compass-compile.yml
 
+    - name: Rebuild composer.json
+      include: tasks/drush/drush.yml
+      with_items:
+        - composer-rebuild: ~
+
     - name: Install Composer dependencies
       shell: "cd $(drush ev '_destination_alter_download_path()') && composer update"
       args:

@@ -95,6 +95,16 @@ class Key extends \Entity {
   }
 
   /**
+   * Return path of private or public key when casting a string type.
+   *
+   * @return string
+   *   Path of private or public key.
+   */
+  public function __toString() {
+    return $this->getPrivatePath() ?: $this->getPublicPath();
+  }
+
+  /**
    * {@inheritdoc}
    */
   public function save() {
@@ -105,7 +115,7 @@ class Key extends \Entity {
     // Generate public key if it is missed and private is set.
     if (empty($this->keys[static::KEY_PUBLIC]) && !empty($this->keys[static::KEY_PRIVATE])) {
       // Get path to a file on a private file system.
-      $filename = $this->getFilename(static::KEY_PRIVATE, FALSE);
+      $filename = $this->getPrivatePath();
 
       // Save the file and generate a public key.
       if (file_put_contents($filename, $this->keys[static::KEY_PRIVATE])) {
@@ -157,6 +167,16 @@ class Key extends \Entity {
   }
 
   /**
+   * Get path of public key file.
+   *
+   * @return string
+   *   Path of public key file.
+   */
+  public function getPublicPath() {
+    return $this->getFilename(static::KEY_PUBLIC, FALSE);
+  }
+
+  /**
    * Set new value of a public key.
    *
    * @param string $content
@@ -177,6 +197,16 @@ class Key extends \Entity {
    */
   public function getPrivate() {
     return $this->getKey(static::KEY_PRIVATE);
+  }
+
+  /**
+   * Get path of private key file.
+   *
+   * @return string
+   *   Path of private key file.
+   */
+  public function getPrivatePath() {
+    return $this->getFilename(static::KEY_PRIVATE, FALSE);
   }
 
   /**

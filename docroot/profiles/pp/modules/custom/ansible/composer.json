@@ -1,5 +1,6 @@
 {
   "require": {
+    "league/climate": "3.*",
     "misterion/ko-process": "0.*"
   }
 }

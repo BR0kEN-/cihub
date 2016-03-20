@@ -2,6 +2,8 @@
 /**
  * @file
  * Callbacks and helper functions for the "ssh_key" entity.
+ *
+ * NOTE! SSH key entity is completely depends on user.
  */
 
 /**
@@ -34,6 +36,23 @@ function secureshell_key_machine_name_exists($machine_name, array &$form, array 
  */
 function secureshell_key_overview_page_uri(\stdClass $account) {
   return str_replace('%user', $account->uid, SECURESHELL_KEYS_ADMIN_PATH);
+}
+
+/**
+ * Load SSH key of a user.
+ *
+ * @param \stdClass $account
+ *   An object of a user.
+ *
+ * @return \SecureShell\Key
+ *   SSH key objects.
+ */
+function secureshell_key_load_all(\stdClass $account) {
+  $entities = entity_load('ssh_key', FALSE, [
+    'uid' => $account->uid,
+  ]);
+
+  return $entities;
 }
 
 /**

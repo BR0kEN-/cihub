@@ -14,7 +14,8 @@ function ansible_node_info() {
 
   $info['server'] = [
     'name' => t('Server'),
-    'base' => 'node_content',
+    // @see ansible_server_form()
+    'base' => 'ansible_server',
     'locked' => TRUE,
     'has_title' => TRUE,
     'title_label' => t('Title'),
@@ -37,6 +38,72 @@ function ansible_init() {
  */
 function ansible_admin_paths_alter(array &$paths) {
   $paths['user'] = FALSE;
+}
+
+function ansible_server_form(\stdClass $node, array &$form_state) {
+  $form = node_content_form($node, $form_state);
+
+  $form['#validate'][] = 'ansible_server_form_validate';
+
+  return $form;
+}
+
+function ansible_server_form_validate(array $form, array &$form_state) {
+  /* @var \EntityDrupalWrapper $wrapper */
+  $wrapper = entity_metadata_wrapper($form['#entity_type'], $form['#node']);
+  $filename = drupal_tempnam('temporary://', 'ansible_inventory');
+  $content = [];
+  $values = [];
+
+  foreach ([
+    'ansible_host' => TRUE,
+    'ansible_user' => 'root',
+    'ansible_port' => 22,
+    'ansible_ssh_private_key_file' => '',
+  ] as $property => $value) {
+    if (isset($wrapper->{$property})) {
+      $value = $wrapper->{$property}->value() ?: $value;
+    }
+
+    $content[] = "$property=$value";
+    $values[$property] = $value;
+  }
+
+  if (file_put_contents($filename, $content)) {
+    list($output, $status) = ansible_provision($filename, $values['ansible_host']);
+  }
+}
+
+function ansible_provision_form(array $form, array &$form_state, \stdClass $node) {
+  /* @var \EntityDrupalWrapper $wrapper */
+  $wrapper = entity_metadata_wrapper('node', $node);
+
+  $form['actions'] = [
+    '#type' => 'actions',
+  ];
+
+  $form['actions']['deploy'] = [
+    '#type' => 'submit',
+    '#value' => t('Deploy'),
+  ];
+
+  return $form;
+}
+
+function ansible_provision_form_submit(array $form, array &$form_state) {
+
+}
+
+function ansible_provision($inventory, $limit) {
+  $output = NULL;
+  $return_var = NULL;
+
+  exec(format_string("php !script -i $inventory -l $limit -p !playbook", [
+    '!script' => __DIR__ . '/ansible.inc',
+    '!playbook' => __DIR__ . '/playbook.yml',
+  ]), $output, $return_var);
+
+  return [$output, $return_var];
 }
 
 /**
@@ -67,10 +134,4 @@ function ansible_include($type, $dir = 'includes', $extension = 'inc') {
   }
 
   return '';
-}
-
-function ci_test() {
-  var_dump(
-    shell_exec(sprintf('php %s/ansible.inc > /dev/null 2>&1 &', __DIR__))
-  );
 }

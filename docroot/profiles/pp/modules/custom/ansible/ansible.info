@@ -2,6 +2,8 @@ name = Ansible
 core = 7.x
 php = 5.5
 
+autoload[plugins][] = CTools
+
 dependencies[] = number
 dependencies[] = ctools_api
 dependencies[] = secureshell
