@@ -41,6 +41,7 @@ function secureshell_entity_info() {
     'base table' => 'ssh_keys',
     'entity class' => 'SecureShell\Key',
     'controller class' => 'SecureShell\Key\EntityController',
+    'views controller class' => 'SecureShell\Key\ViewsController',
     'bundles' => [],
     // For integration with Redirect module.
     // @see http://drupal.org/node/1263884
