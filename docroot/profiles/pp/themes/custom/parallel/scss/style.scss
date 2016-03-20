@@ -1,0 +1,31 @@
+@import "variables", "mixins", "normalize";
+
+html {
+  &:before {
+    content: "#{inspect($breakpoints)}";
+    display: none;
+  }
+}
+
+@each $tag, $size in combine(headings(), (38px, 32px, 28px, 22px, 18px, 16px)) {
+  #{$tag} {
+    @include font($size, 1.2, 300);
+  }
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+#overlay {
+  @include full-width(fixed);
+  background: rgba(0, 0, 0, .6);
+}

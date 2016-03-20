@@ -1,0 +1,10 @@
+{
+    "require": {
+        "misterion/ko-process": "0.*",
+        "php": ">=5.3.0"
+    },
+    "config": {
+        "autoloader-suffix": "ComposerManager"
+    },
+    "prefer-stable": true
+}

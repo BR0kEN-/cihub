@@ -1,0 +1,12 @@
+---
+reports_dir: ../docroot/build_reports
+artifacts_file: ../commentinfo.md
+scan_dirs:
+  - ../docroot/sites/all/*/custom
+
+phpcs_extensions: php,inc,install,module
+phpcs_standards:
+  - Drupal
+  - DrupalSecure
+  - Security
+  - DrupalPractice

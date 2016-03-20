@@ -1,0 +1,251 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+
+  vars_files:
+    - ../config.yml
+    - vars/php.yml
+    - vars/ports.yml
+    - vars/mysql.yml
+    - vars/nginx.yml
+    - vars/apache.yml
+
+  vars_prompt:
+    - name: solr
+      prompt: Do you want to install Solr? (yes/NO)
+      private: no
+
+    - name: varnish
+      prompt: Do you want to install Varnish? (yes/NO)
+      private: no
+
+    - name: pcntl
+      prompt: Do you want to install PCNTL extension for PHP? (yes/NO)
+      private: no
+
+    - name: http_auth_user
+      prompt: Username for HTTP authentication
+      default: admin
+      private: no
+      # WARNING!!! This condition will be processed only inside of Vagrantfile! The "vagrant"
+      # variable is undefined here and "when" construction aren't processed by Ansible for prompts.
+      when: not vagrant
+
+    - name: http_auth_pass
+      prompt: Passowrd for HTTP authentication
+      default: r3str1cteDHere
+      private: no
+      # WARNING!!! This condition will be processed only inside of Vagrantfile! The "vagrant"
+      # variable is undefined here and "when" construction aren't processed by Ansible for prompts.
+      when: not vagrant
+
+  vars:
+    vagrant: no
+    # Use this secret in your client (Varnish module) in order to connect to Varnish.
+    varnish_secret: "14bac2e6-1e34-4770-8078-974373b76c90"
+    cibox_ssl_folder: /etc/ssl/private
+    composer_packages:
+      drush/drush: 7.*
+      drupal/coder: dev-7.x-2.x
+      squizlabs/php_codesniffer: 1.5.6
+
+    cibox_protected_folders:
+      - path: "{{ webroot }}"
+        user: "{{ http_auth_user }}"
+        pass: "{{ http_auth_pass }}"
+
+    basic_packages:
+      - python
+      - python-dev
+      - python-pycurl
+      - python-simplejson
+      - curl
+      - make
+      - rsync
+      - git
+      - libmysqlclient-dev
+      - apparmor-utils
+      - bsdutils
+      - software-properties-common
+      - python-software-properties
+
+    pip_packages:
+      - setuptools
+      - paramiko
+      - pyyaml
+      - jinja2
+      - markupsafe
+      - MySQL-python
+      - ansible
+
+  pre_tasks:
+    - include: tasks/detect-vagrant.yml
+      tags: ["always"]
+
+    - include: tasks/project-variable.yml
+      when: not vagrant
+      tags: ["always"]
+
+    - name: "Obtain home directory of \"{{ ansible_user }}\" user"
+      shell: "eval echo ~{{ ansible_user }}"
+      register: user_home
+      tags: ["always"]
+
+    - name: Set name for Jenkins job
+      set_fact:
+        jenkins_job: "{{ project }}"
+      when: not vagrant
+      tags: ["always"]
+
+    - name: Process facts
+      set_fact:
+        extras:
+          solr: "{{ solr | bool }}"
+          pcntl: "{{ pcntl | bool }}"
+          varnish: "{{ varnish | bool }}"
+      tags: ["always"]
+
+    - name: Update APT cache
+      apt:
+        update_cache: yes
+
+    - name: Install basic packages for Ansible
+      apt:
+        name: "{{ item }}"
+        state: present
+      with_items: basic_packages
+
+    - name: Downloading EasyInstall
+      get_url:
+        url: https://raw.githubusercontent.com/ActiveState/ez_setup/v0.9/ez_setup.py
+        dest: ~/ez_setup.py
+
+    - name: Install EasyInstall
+      shell: "cd ~ && python ez_setup.py && rm -f ez_setup.py"
+
+    - name: Install PIP
+      shell: "easy_install pip"
+
+    - name: Install PIP packages
+      pip:
+        name: "{{ item }}"
+        state: latest
+      with_items: pip_packages
+
+    - name: Stop services
+      service:
+        name: "{{ item }}"
+        state: stopped
+      ignore_errors: yes
+      with_items:
+        - varnish
+        - apache2
+
+    - name: Create CIBox command line utility
+      file:
+        src: /var/www/cibox
+        dest: /usr/bin/cibox
+        state: link
+      when: vagrant
+
+    - name: Generate Bash completion for CIBox utility
+      template:
+        src: templates/cibox.complete.sh.j2
+        dest: /etc/bash_completion.d
+      when: vagrant
+
+  roles:
+    - role: cibox-misc
+      tags: ["misc"]
+
+    - role: ansible-role-nginx
+      tags: ["nginx", "php-stack"]
+      when: not vagrant
+
+    - role: ansible-role-apache
+      tags: ["apache", "php-stack"]
+
+    - role: ansible-role-php
+      tags: ["php", "php-stack"]
+
+    - role: ansible-php-pear
+      tags: ["pear", "php-stack"]
+
+    - role: ansible-role-php-xhprof
+      tags: ["xhprof", "php-stack"]
+
+    - role: ansible-role-php-xdebug
+      tags: ["xdebug", "php-stack"]
+
+    - role: php-pcntl
+      when: extras.pcntl
+      tags: ["pcntl", "php-stack"]
+
+    - role: ansible-composer
+      tags: ["composer", "php-stack"]
+
+    - role: cibox-wp-cli
+      tags: ["wp-cli", "php-stack"]
+
+    - role: ansible-role-mysql
+      tags: ["mysql", "php-stack"]
+
+    - role: cibox-jetty-solr
+      when: extras.solr
+      tags: ["solr", "php-stack"]
+
+    - role: cibox-sniffers
+      tags: ["sniffers", "php-stack"]
+
+    - role: cibox-mysql-config
+      tags: ["mysql", "php-stack"]
+
+    - role: cibox-ssl-config
+      tags: ["ssl-config"]
+
+    - role: cibox-varnish
+      when: extras.varnish
+      tags: ["varnish"]
+
+    - role: ansible-role-memcached
+      tags: ["memcache", "php-stack"]
+
+    - role: cibox-swap
+      when: not vagrant and ansible_virtualization_type != "openvz"
+      tags: ["swap"]
+
+    - role: cibox-jenkins
+      when: not vagrant
+      tags: ["jenkins"]
+
+    - role: cibox-selenium
+      tags: ["selenium"]
+
+    - role: cibox-protected-folders
+      when: not vagrant
+
+  tasks:
+    - name: Starting random rnd-tools service
+      shell: rngd -r /dev/urandom
+      when: not vagrant and ansible_virtualization_type != "openvz"
+
+    - name: Create global config for NGINX
+      template:
+        src: cibox.nginx.j2
+        dest: "/etc/nginx/sites-{{ item }}/cibox"
+      when: not vagrant
+      with_items: ["enabled", "available"]
+      tags: ["nginx"]
+
+    # @todo Doesn't work using Ansible "gem" module.
+    - name: Install Compass
+      shell: gem install compass
+
+    - name: Restart services
+      service:
+        name: "{{ item }}"
+        state: restarted
+      ignore_errors: yes
+      with_items:
+        - apache2

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the File system feature.
+ */
+
+include_once 'config_file_system.features.inc';

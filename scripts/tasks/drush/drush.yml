@@ -1,0 +1,3 @@
+---
+- shell: "cd ../docroot && drush {{ item | join(' ') }} {{ (item[item | join(' ')] or []) | join(' ') }} -y"
+  environment: "{{ env_vars }}"

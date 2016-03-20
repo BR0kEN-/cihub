@@ -1,0 +1,12 @@
+name = File system
+core = 7.x
+package = Configs
+dependencies[] = ctools
+dependencies[] = strongarm
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[variable][] = file_default_scheme
+features[variable][] = file_md5_file_validate
+features[variable][] = file_private_path
+features[variable][] = file_public_path
+features[variable][] = file_temporary_path

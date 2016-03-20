@@ -1,0 +1,13 @@
+name = Key
+description = Provides the ability to manage site-wide keys.
+package = Security
+core = 7.x
+configure = admin/config/system/keys
+dependencies[] = ctools
+
+; Information added by Drupal.org packaging script on 2016-02-26
+version = "7.x-3.2"
+core = "7.x"
+project = "key"
+datestamp = "1456523478"
+

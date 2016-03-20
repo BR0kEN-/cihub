@@ -1,0 +1,62 @@
+<?php
+/**
+ * @file
+ * Installation and updating tasks.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function secureshell_schema() {
+  $schema = [];
+
+  $schema['ssh_keys'] = [
+    'description' => 'User SSH keys.',
+    'fields' => [
+      'id' => array(
+        'type' => 'serial',
+        'not null' => TRUE,
+        'description' => 'Internal identifier of a key.',
+      ),
+      'uid' => [
+        'type' => 'int',
+        'default' => 0,
+        'not null' => TRUE,
+        'unsigned' => TRUE,
+        'description' => 'An ID of key owner.',
+      ],
+      'type' => [
+        'type' => 'varchar',
+        'length' => 7,
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'Key type: public or private.',
+      ],
+      'name' => [
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'Machine name of a key.',
+      ],
+      'label' => [
+        'type' => 'varchar',
+        'length' => 60,
+        'default' => '',
+        'not null' => TRUE,
+        'description' => 'Label of a key.',
+      ],
+    ],
+    'indexes' => [
+      'uid' => ['uid'],
+    ],
+    'primary key' => [
+      'id',
+    ],
+    'unique keys' => [
+      'name' => ['uid', 'name'],
+    ],
+  ];
+
+  return $schema;
+}

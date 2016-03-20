@@ -1,0 +1,31 @@
+# WARNING! This file is not managed by Ansible and should not contain any usage of it features.
+---
+cmf: drupal
+project: cihub
+site_url: http://cihub.dev
+tmproot: /tmp
+webroot: /var/www
+selenium: http://selenium-release.storage.googleapis.com/2.46/selenium-server-standalone-2.46.0.jar
+vm:
+  ip: 192.168.56.130
+  forwarded_port:
+    - host: 8081
+      guest: 80
+    - host: 8083
+      guest: 3306
+    - host: 4444
+      guest: 4444
+  virtualbox:
+    box: http://128.199.55.125/ubuntu14.04LTS_cibox.box
+    modifyvm:
+      cpus: 2
+      memory: 2048
+      natdnshostresolver1: "on"
+  lxc:
+    box: https://atlas.hashicorp.com/fgrehm/boxes/precise64-lxc/versions/1.2.0/providers/lxc.box
+  synced_folder:
+    - source: ./
+      target: /var/www
+      exclude:
+        - .idea/
+        - .git/

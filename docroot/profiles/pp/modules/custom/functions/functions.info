@@ -1,0 +1,7 @@
+name = Functions
+description = Helper functions for Drupal project.
+core = 7.x
+php = 5.4
+
+required = TRUE
+hidden = TRUE

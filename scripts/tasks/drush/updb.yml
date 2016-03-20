@@ -1,0 +1,5 @@
+---
+- name: Run database updates
+  include: drush.yml
+  with_dict:
+    updb: ~

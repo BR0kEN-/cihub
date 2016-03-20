@@ -1,0 +1,18 @@
+---
+- hosts: all
+  gather_facts: yes
+  become: yes
+
+  vars_files:
+    - vars/php.yml
+    - vars/ports.yml
+    - vars/mysql.yml
+    - vars/nginx.yml
+    - vars/apache.yml
+
+  tasks:
+    - name: Get PHP sources
+      shell: "mkdir /tmp/phpsource && cd $_ && apt-get source php5 && cd $(ls -d */)/ext/pcntl"
+      register: php_pcntl_path
+
+    - debug: var=php_pcntl_path

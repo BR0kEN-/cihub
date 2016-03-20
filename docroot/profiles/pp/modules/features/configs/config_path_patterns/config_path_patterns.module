@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Path patterns feature.
+ */
+
+include_once 'config_path_patterns.features.inc';

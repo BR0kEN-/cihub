@@ -1,0 +1,58 @@
+<?php
+/**
+ * @file
+ * Install, update and uninstall functions for the pp installation profile.
+ */
+
+define('PP_DEFAULT_THEME', 'parallel');
+define('PP_ADMIN_THEME', 'adminimal');
+
+/**
+ * Implements hook_install().
+ *
+ * Performs actions to set up the site for this profile.
+ *
+ * @see system_install()
+ */
+function pp_install() {
+  foreach ([
+    'admin_theme' => PP_ADMIN_THEME,
+    // @todo Replace by PP_DEFAULT_THEME in future.
+    'theme_default' => PP_ADMIN_THEME,
+    // Allow visitor account creation, but with administrative approval.
+    'user_register' => USER_REGISTER_ADMINISTRATORS_ONLY,
+    'node_admin_theme' => TRUE,
+  ] as $variable => $value) {
+    variable_set($variable, $value);
+  }
+
+  // Enable/disable themes.
+  foreach ([
+    'enable' => [PP_ADMIN_THEME],
+    'disable' => ['bartik'],
+  ] as $action => $themes) {
+    call_user_func("theme_$action", $themes);
+  }
+
+  db_insert('block')
+    ->fields([
+      'module' => 'system',
+      'delta' => 'main',
+      'theme' => PP_DEFAULT_THEME,
+      'status' => 0,
+      'weight' => 0,
+      'region' => 'content',
+      'pages' => '',
+      'cache' => -1,
+    ])
+    ->execute();
+
+  // Enable default permissions for system roles.
+  foreach ([DRUPAL_ANONYMOUS_RID, DRUPAL_AUTHENTICATED_RID] as $rid) {
+    user_role_grant_permissions($rid, ['access content']);
+  }
+
+//  foreach (file_md5_scan() as $file) {
+//    file_usage_add($file, 'pp', 'user', 1);
+//  }
+}

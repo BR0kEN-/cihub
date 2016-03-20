@@ -1,0 +1,63 @@
+---
+- hosts: localhost
+  gather_facts: yes
+  connection: local
+  become: yes
+
+  vars_files:
+    - ../config.yml
+    - vars/main.yml
+
+  tasks:
+    - include: tasks/environment/configuration.yml
+
+    - name: Remove databases
+      include: tasks/database/database.yml
+      args:
+        state: absent
+
+    - include: tasks/environment/prepare.yml
+
+    - include: tasks/drush/si.yml
+      when: not sql_workflow
+
+    - name: Create databases
+      include: tasks/database/database.yml
+      args:
+        state: present
+
+    - include: tasks/drupal-settings.yml
+
+    # Download and import databases.
+    - include: tasks/database/import.yml
+      when: sql_workflow
+
+    # Unique way for both workflows.
+    - include: tasks/super-admin.yml
+
+    - include: tasks/drush/rr.yml
+      when: sql_workflow
+
+    - include: tasks/drush/vset.yml
+
+    - name: Execute Drush commands
+      include: tasks/drush/drush.yml
+      with_items: "{{ commands.pre }}"
+
+    - include: tasks/drush/updb.yml
+      when: sql_workflow
+
+    - name: Execute Drush commands
+      include: tasks/drush/drush.yml
+      with_items: "{{ commands.post }}"
+
+    - include: tasks/compass-compile.yml
+
+    - name: Install Composer dependencies
+      shell: "cd $(drush ev '_destination_alter_download_path()') && composer update"
+      args:
+        chdir: "../docroot"
+      register: composer_result
+      # Returned code "1" has a message: "You are running composer with Xdebug enabled.".
+      failed_when: "{{ composer_result.rc > 1 }}"
+      environment: "{{ env_vars }}"

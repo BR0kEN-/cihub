@@ -1,0 +1,7 @@
+name = Secure Shell
+core = 7.x
+php = 5.5
+
+autoload[includes][] = SecureShell
+
+dependencies[] = entity_wildcard

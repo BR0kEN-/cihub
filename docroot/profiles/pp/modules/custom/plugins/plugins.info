@@ -1,0 +1,8 @@
+name = Plugins
+hidden = TRUE
+core = 7.x
+php = 5.5
+
+autoload[ctools][] = CTools
+
+dependencies[] = ctools_api

@@ -1,0 +1,5 @@
+---
+- hosts: all
+
+  tasks:
+    - shell: sleep 3

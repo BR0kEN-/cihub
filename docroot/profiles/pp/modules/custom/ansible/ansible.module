@@ -1,0 +1,76 @@
+<?php
+/**
+ * @file
+ * Ansible.
+ */
+
+define('ANSIBLE_MODULE_NAME', 'ansible');
+
+/**
+ * Implements hook_node_info().
+ */
+function ansible_node_info() {
+  $info = [];
+
+  $info['server'] = [
+    'name' => t('Server'),
+    'base' => 'node_content',
+    'locked' => TRUE,
+    'has_title' => TRUE,
+    'title_label' => t('Title'),
+    'description' => t('Storage for information about physical servers.'),
+  ];
+
+  return $info;
+}
+
+/**
+ * Implements hook_init().
+ */
+function ansible_init() {
+  ansible_include('fields');
+//  ansible_create_fields(ansible_fields_schema('node', 'server'), TRUE);
+}
+
+/**
+ * Implements hook_admin_paths_alter().
+ */
+function ansible_admin_paths_alter(array &$paths) {
+  $paths['user'] = FALSE;
+}
+
+/**
+ * Include module files.
+ *
+ * @param string $type
+ *   File type.
+ * @param string $dir
+ *   Directory name.
+ * @param string $extension
+ *   File extension.
+ *
+ * @return string
+ *   Full path to file.
+ */
+function ansible_include($type, $dir = 'includes', $extension = 'inc') {
+  $file = sprintf("%s/$dir/%s.$type.$extension", drupal_get_path('module', ANSIBLE_MODULE_NAME), ANSIBLE_MODULE_NAME);
+
+  if (file_exists($file)) {
+    // Allow to require only files with PHP code.
+    if ('inc' === $extension) {
+      // @codingStandardsIgnoreStart
+      require_once $file;
+      // @codingStandardsIgnoreEnd
+    }
+
+    return $file;
+  }
+
+  return '';
+}
+
+function ci_test() {
+  var_dump(
+    shell_exec(sprintf('php %s/ansible.inc > /dev/null 2>&1 &', __DIR__))
+  );
+}

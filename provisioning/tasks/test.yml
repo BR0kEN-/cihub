@@ -1,0 +1,5 @@
+---
+- set_fact:
+    key: "{{ item | join(' ') }}"
+
+- debug: msg="drush {{ key }} {{ (item[key] or []) | join(' ') }} -y"

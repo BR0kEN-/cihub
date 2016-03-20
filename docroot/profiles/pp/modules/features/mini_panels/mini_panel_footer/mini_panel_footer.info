@@ -1,0 +1,8 @@
+name = Footer
+core = 7.x
+package = Mini Panels
+dependencies[] = ctools
+dependencies[] = panels_mini
+features[ctools][] = panels_mini:panels_default:1
+features[features_api][] = api:2
+features[panels_mini][] = footer

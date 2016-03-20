@@ -1,0 +1,33 @@
+---
+- name: settings.php
+  shell: "cd ../docroot/sites/default && cp default.settings.php settings.php"
+
+- name: Generating databases config
+  become: no
+  template:
+    src: templates/databases.j2
+    dest: ./databases.settings.php
+    mode: 0644
+
+- name: Write databases config to settings.php
+  lineinfile:
+    dest: "../docroot/sites/default/settings.php"
+    line: "{{ lookup('file', 'databases.settings.php') }}"
+
+- name: Remove temporary file
+  become: no
+  file:
+    path: databases.settings.php
+    state: absent
+
+- name: Adding variables to settings.php
+  lineinfile:
+    dest: "../docroot/sites/default/settings.php"
+    line: "${{ item.key }} = '{{ item.value }}';"
+  with_dict: "{{ drupal.settings }}"
+
+- name: Adding $conf values to settings.php
+  lineinfile:
+    dest: "../docroot/sites/default/settings.php"
+    line: "$conf['{{ item.key }}'] = '{{ item.value }}';"
+  with_dict: "{{ drupal.conf }}"

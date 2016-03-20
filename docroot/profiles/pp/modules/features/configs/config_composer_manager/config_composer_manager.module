@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the Composer Manager feature.
+ */
+
+include_once 'config_composer_manager.features.inc';

@@ -1,0 +1,62 @@
+name = PP
+description = Start with only a few modules enabled.
+core = 7.x
+
+; Core
+
+dependencies[] = block
+dependencies[] = field
+
+; Contrib
+
+dependencies[] = admin_menu
+dependencies[] = imce
+dependencies[] = features
+dependencies[] = file_md5
+dependencies[] = strongarm
+dependencies[] = entityreference
+; Includes: table_element, managed_file, panels, ctools, file, image
+dependencies[] = ctools_api
+dependencies[] = panels_everywhere
+; Includes: token, path
+dependencies[] = pathauto
+dependencies[] = views
+
+; Contrib (submodules)
+
+dependencies[] = panels_mini
+dependencies[] = views_content
+
+; Custom
+
+dependencies[] = ansible
+dependencies[] = functions
+
+; Features
+
+; Configs
+dependencies[] = config_main
+; Includes: ckeditor
+dependencies[] = config_ckeditor
+dependencies[] = config_file_system
+dependencies[] = config_permissions
+; Includes: filter
+dependencies[] = config_text_formats
+dependencies[] = config_path_patterns
+; Includes: composer_manager
+dependencies[] = config_composer_manager
+
+; Page Templates
+dependencies[] = page_site_template
+
+; Pages
+dependencies[] = page_error
+dependencies[] = page_frontpage
+dependencies[] = page_user_view
+
+; Mini Panels
+dependencies[] = mini_panel_header
+dependencies[] = mini_panel_footer
+
+; Views
+dependencies[] = view_servers

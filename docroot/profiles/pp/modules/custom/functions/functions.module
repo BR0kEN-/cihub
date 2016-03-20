@@ -1,0 +1,74 @@
+<?php
+/**
+ * @file
+ * Helper functions.
+ *
+ * WARNING! All developers, which won't read lines below or adhere
+ * these recommendations, should have to pay me 50 UAH every time.
+ *
+ * In this file only hooks can be stored. All auxiliary functionality should
+ * be located inside of "includes/" directory and grouped per files. Global
+ * functionality MUST be included into this file, other - using load_include()
+ * function in needed place.
+ *
+ * @author Sergii Bondarenko <sb@firstvector.org>
+ */
+
+require_once 'includes/functions.load_include.inc';
+require_once 'includes/functions.theme.inc';
+
+/**
+ * Implements hook_theme().
+ */
+function functions_theme() {
+  $hooks = [];
+
+  // Styling the login form by creating a template file inside of theme.
+  // WARNING! Do not forget to render required form fields:
+  // - form_token
+  // - build_id
+  // - form_id
+  $hooks['user_login'] = [
+    'render element' => 'form',
+  ];
+
+  return $hooks;
+}
+
+/**
+ * Implements hook_node_export_alter().
+ */
+function functions_node_export_alter(array &$nodes) {
+  load_include('functions', 'node_export');
+
+  foreach ($nodes as &$node) {
+    node_export_field_collection_recursive_export_import('node', $node);
+  }
+}
+
+/**
+ * Implements hook_node_export_import_alter().
+ */
+function functions_node_export_import_alter(array &$nodes) {
+  functions_node_export_alter($nodes);
+}
+
+/**
+ * Implements hook_node_export_encode_alter().
+ */
+function functions_node_export_encode_alter(&$code_string, array $nodes, $format) {
+  global $base_url;
+
+  $code_string = strtr($code_string, [
+    trim(call_user_func(node_export_format_handlers()[$format]['#export_callback'], $base_url, $format), '"') => 'BASEURL',
+  ]);
+}
+
+/**
+ * Implements hook_node_export_decode_alter().
+ */
+function functions_node_export_decode_alter(&$code_string) {
+  global $base_url;
+
+  $code_string = strtr($code_string, ['BASEURL' => $base_url]);
+}

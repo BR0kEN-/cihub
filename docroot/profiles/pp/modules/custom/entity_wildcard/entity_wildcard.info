@@ -1,0 +1,9 @@
+name = Entity Wildcard
+description = Allow to use multiple wildards for entity path and be dependent on multiple parameters.
+core = 7.x
+php = 5.5
+
+autoload[includes][] = Entity
+
+dependencies[] = autoload
+dependencies[] = entity

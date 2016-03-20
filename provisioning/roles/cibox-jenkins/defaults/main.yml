@@ -1,0 +1,49 @@
+---
+jenkins_job: default
+jenkins_port: 8080
+jenkins_data:
+  user: jenkins
+  group: jenkins
+  jobs:
+    - name: BACKUP_PROD_DB
+      template: backup_prod_db.xml.j2
+
+    - name: DISK_USAGE_TRIGGER
+      template: disk_usage_trigger.xml.j2
+
+    - name: SERVER_CLEANER
+      template: server_cleaner.xml.j2
+
+    - name: "{{ jenkins_job }}_BUILDER"
+      template: builder.xml.j2
+
+    - name: "{{ jenkins_job }}_PR_BUILDER"
+      template: pr_builder.xml.j2
+
+  users:
+    - name: root
+      template: root.xml.j2
+
+plugins:
+  - http://mirrors.jenkins-ci.org/plugins/ansicolor/0.4.2/ansicolor.hpi
+  - http://mirrors.jenkins-ci.org/plugins/token-macro/1.11/token-macro.hpi
+  - http://mirrors.jenkins-ci.org/plugins/ssh-agent/1.8/ssh-agent.hpi
+  - http://mirrors.jenkins-ci.org/plugins/plain-credentials/1.1/plain-credentials.hpi
+  - http://mirrors.jenkins-ci.org/plugins/credentials/1.22/credentials.hpi
+  - http://mirrors.jenkins-ci.org/plugins/git-client/1.19.0/git-client.hpi
+  - http://mirrors.jenkins-ci.org/plugins/git/2.4.0/git.hpi
+  - http://mirrors.jenkins-ci.org/plugins/github-api/1.69/github-api.hpi
+  - http://mirrors.jenkins-ci.org/plugins/github/1.14.0/github.hpi
+  - http://mirrors.jenkins-ci.org/plugins/ghprb/1.15-0/ghprb.hpi
+  - http://mirrors.jenkins-ci.org/plugins/htmlpublisher/1.9/htmlpublisher.hpi
+  - http://mirrors.jenkins-ci.org/plugins/jquery/1.11.2-0/jquery.hpi
+  - http://mirrors.jenkins-ci.org/plugins/matrix-auth/1.2/matrix-auth.hpi
+  - http://mirrors.jenkins-ci.org/plugins/matrix-project/1.6/matrix-project.hpi
+  - http://mirrors.jenkins-ci.org/plugins/project-description-setter/1.1/project-description-setter.hpi
+  - http://mirrors.jenkins-ci.org/plugins/ssh-credentials/1.11/ssh-credentials.hpi
+  - http://mirrors.jenkins-ci.org/plugins/hipchat/0.2.0/hipchat.hpi
+  - http://mirrors.jenkins-ci.org/plugins/scm-api/0.2/scm-api.hpi
+  - http://mirrors.jenkins-ci.org/plugins/scripttrigger/0.31/scripttrigger.hpi
+  - http://mirrors.jenkins-ci.org/plugins/parameterized-trigger/2.28/parameterized-trigger.hpi
+
+jenkins_pkg_version: http://pkg.jenkins-ci.org/debian/binary/jenkins_1.638_all.deb

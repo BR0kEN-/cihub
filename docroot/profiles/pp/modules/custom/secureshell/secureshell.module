@@ -1,0 +1,65 @@
+<?php
+/**
+ * @file
+ * Secure Shell.
+ */
+
+define('SECURESHELL_KEYS_ADMIN_PATH', 'user/%user/ssh-keys');
+
+require_once 'includes/secureshell.key.inc';
+
+//drupal_uninstall_schema('secureshell');
+//drupal_install_schema('secureshell');
+
+/**
+ * Implements hook_permission().
+ */
+function secureshell_permission() {
+  $permissions = [];
+
+  $permissions['administer ssh keys'] = [
+    'title' => t('Administer SSH keys'),
+    'description' => t('Allow to administer SSH keys of all users.'),
+  ];
+
+  $permissions['manage own ssh keys'] = [
+    'title' => t('Manage SSH keys'),
+    'description' => t('Manage your own SSH keys.'),
+  ];
+
+  return $permissions;
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function secureshell_entity_info() {
+  $info = [];
+
+  $info['ssh_key'] = [
+    'label' => t('SSH Key'),
+    'base table' => 'ssh_keys',
+    'entity class' => 'SecureShell\Key',
+    'controller class' => 'SecureShell\Key\EntityController',
+    'bundles' => [],
+    // For integration with Redirect module.
+    // @see http://drupal.org/node/1263884
+    'redirect' => FALSE,
+    'fieldable' => FALSE,
+    // SSH key - is a private data and it should not be exported.
+    'exportable' => FALSE,
+    'entity keys' => [
+      'id' => 'id',
+      'label' => 'label',
+    ],
+    'admin ui' => [
+      'path' => SECURESHELL_KEYS_ADMIN_PATH,
+      'controller class' => 'SecureShell\Key\UI\EntityController',
+    ],
+//    'inline entity form' => [
+//      'controller' => 'SecureShell\Key\UI\InlineEntityFormController',
+//    ],
+  ];
+
+  return $info;
+}

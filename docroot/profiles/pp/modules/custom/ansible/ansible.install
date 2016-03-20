@@ -1,0 +1,82 @@
+<?php
+/**
+ * @file
+ * Installation and updates tasks.
+ */
+
+///**
+// * Implements hook_schema().
+// */
+//function ansible_schema() {
+//  $schema = [];
+//
+//  // Primary table.
+//  $schema['servers_hosts'] = [
+//    'description' => 'Physical servers and accesses for them.',
+//    'fields' => [
+//      'title' => [
+//        'type' => 'varchar',
+//        'length' => 60,
+//        'description' => 'Human-readable name of a server.',
+//      ],
+//      'name' => [
+//        'type' => 'varchar',
+//        'length' => 10,
+//        'description' => 'Machine-readable name of application.',
+//      ],
+//      'host' => [
+//        'type' => 'varchar',
+//        'length' => 80,
+//        'unique' => TRUE,
+//        'description' => 'Hostname for SSH connection.',
+//      ],
+//      'port' => [
+//        'type' => 'int',
+//        'size' => 'tiny',
+//        'default' => 0,
+//        'not null' => TRUE,
+//        'unsigned' => TRUE,
+//        'description' => 'Port for SSH connection.',
+//      ],
+//      'key' => [
+//        'type' => 'varchar',
+//        'length' => 255,
+//        'description' => 'Path to private key for SSH connection.',
+//      ],
+//    ],
+//  ];
+//
+//  // Secondary table. Depends on "servers_hosts".
+//  $schema['servers_droplets'] = [
+//    'description' => 'Virtual servers, attached to a host.',
+//    'fields' => [],
+//  ];
+//
+//  return $schema;
+//}
+
+/**
+ * Implements hook_install().
+ */
+function ansible_install() {
+  ansible_include('fields');
+  ansible_create_fields(ansible_fields_schema('node', 'server'));
+
+  ansible_configure_content_type('server', [
+    'menu_options' => [],
+    'node_options' => ['status'],
+    'node_preview' => FALSE,
+    'node_submitted' => FALSE,
+  ]);
+}
+
+/**
+ * Default values for content type.
+ *
+ * @internal
+ */
+function ansible_configure_content_type($content_type, array $variables) {
+  foreach ($variables as $variable => $value) {
+    variable_set($variable . '_' . $content_type, $value);
+  }
+}

@@ -1,0 +1,6 @@
+---
+- name: Ensure that project name specified
+  fail:
+    msg: 'You need to specify project name passing the "--project=NAME" parameter.'
+  # The "True" value will if script runned with "--project" without a value.
+  when: project is undefined or project == "True" or project | length < 2

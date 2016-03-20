@@ -1,0 +1,22 @@
+---
+commands:
+  pre: []
+  post:
+    - fr:
+      - config_main
+
+drupal:
+  # Values for $conf in settings.php.
+  conf:
+    environment: "{{ env }}"
+  # Variables in settings.php.
+  settings:
+    base_url: "{{ site_url }}"
+  # Variables in database.
+  variables:
+    file_temporary_path: "{{ tmproot }}"
+    error_level: 0
+  # Data for super-admin (UID 1).
+  user:
+    name: admin
+    pass: propeople

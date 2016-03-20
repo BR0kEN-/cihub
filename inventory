@@ -1,0 +1,8 @@
+# This is Ansible inventory file. It includes hosts where playbooks will run.
+# Visit for more information: http://docs.ansible.com/ansible/intro_inventory.html
+
+[matrix]
+m2.propeople.com.ua ansible_user=root
+
+[matrix-cibox01]
+cibox01.m2.propeople.com.ua ansible_user=root ansible_port=2201

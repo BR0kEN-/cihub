@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+    <actions/>
+    <description>Create build on every commit to pull request on GitHub.</description>
+    <keepDependencies>false</keepDependencies>
+    <properties>
+        <com.coravy.hudson.plugins.github.GithubProjectProperty plugin="github@1.9.1">
+            <projectUrl>https://github.com/VENDOR/PROJECT/</projectUrl>
+        </com.coravy.hudson.plugins.github.GithubProjectProperty>
+    </properties>
+    <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.5">
+        <configVersion>2</configVersion>
+        <userRemoteConfigs>
+            <hudson.plugins.git.UserRemoteConfig>
+                <name>origin</name>
+                <refspec>+refs/pull/*:refs/remotes/origin/pr/*</refspec>
+                <url>git@github.com:VENDOR/PROJECT.git</url>
+                <credentialsId>c55a496e-7717-4f51-88d5-1a50b478ba55</credentialsId>
+            </hudson.plugins.git.UserRemoteConfig>
+        </userRemoteConfigs>
+        <branches>
+            <hudson.plugins.git.BranchSpec>
+                <name>${sha1}</name>
+            </hudson.plugins.git.BranchSpec>
+        </branches>
+        <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+        <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
+      <hudson.plugins.git.extensions.impl.CloneOption>
+        <shallow>true</shallow>
+        <reference></reference>
+        <timeout>5</timeout>
+      </hudson.plugins.git.extensions.impl.CloneOption>
+      <hudson.plugins.git.extensions.impl.SubmoduleOption>
+        <disableSubmodules>false</disableSubmodules>
+        <recursiveSubmodules>true</recursiveSubmodules>
+        <trackingSubmodules>false</trackingSubmodules>
+        <timeout>5</timeout>
+      </hudson.plugins.git.extensions.impl.SubmoduleOption>
+    </extensions>
+    </scm>
+    <canRoam>true</canRoam>
+    <disabled>false</disabled>
+    <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+    <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+    <concurrentBuild>false</concurrentBuild>
+    <builders>
+        <hudson.tasks.Shell>
+            <command>#!/usr/bin/env bash -e
+
+export PYTHONUNBUFFERED=1
+# Create file for reports.
+touch ${WORKSPACE}/commentinfo.md
+# Store the name of file for reports to variable for future usage.
+export ARTIFACTS=$_
+export PROJECT=$(echo ${JOB_NAME//_PR_BUILDER/} | tr '[:upper:]' '[:lower:]')
+export BUILD_NAME=${PROJECT}_build_${BUILD_NUMBER}
+export SITE_URL=http://$(php -r "echo parse_url('${JOB_URL}')['host'];")/${BUILD_NAME}
+
+./cibox reinstall \
+--build-id=${BUILD_NAME} \
+--site-url=${SITE_URL}
+
+./cibox sniffers \
+--build-id=${BUILD_NAME} \
+--site-url=${SITE_URL} \
+--artifacts-file=${ARTIFACTS}
+
+sudo chown -R jenkins:jenkins ${WORKSPACE}
+# Move project from workspace to directory available in web.
+sudo rsync --delete -ra ./docroot/ /var/www/${BUILD_NAME}/
+# Go to project directory.
+cd $_
+# Set group and owner only for directory with an application.
+sudo chown -R www-data:jenkins $(pwd)
+</command>
+        </hudson.tasks.Shell>
+    </builders>
+    <buildWrappers>
+        <hudson.plugins.ansicolor.AnsiColorBuildWrapper plugin="ansicolor@0.4.0">
+            <colorMapName>xterm</colorMapName>
+        </hudson.plugins.ansicolor.AnsiColorBuildWrapper>
+    </buildWrappers>
+</project>
