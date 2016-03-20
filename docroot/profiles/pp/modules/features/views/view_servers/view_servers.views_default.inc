@@ -22,7 +22,7 @@ function view_servers_views_default_views() {
 
   /* Display: Master */
   $handler = $view->new_display('default', 'Master', 'default');
-  $handler->display->display_options['title'] = 'List of your servers';
+  $handler->display->display_options['title'] = 'Servers';
   $handler->display->display_options['use_more_always'] = FALSE;
   $handler->display->display_options['access']['type'] = 'perm';
   $handler->display->display_options['cache']['type'] = 'none';
@@ -46,13 +46,21 @@ function view_servers_views_default_views() {
   $handler->display->display_options['fields']['title']['table'] = 'node';
   $handler->display->display_options['fields']['title']['field'] = 'title';
   $handler->display->display_options['fields']['title']['label'] = '';
+  $handler->display->display_options['fields']['title']['exclude'] = TRUE;
   $handler->display->display_options['fields']['title']['alter']['word_boundary'] = FALSE;
   $handler->display->display_options['fields']['title']['alter']['ellipsis'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_type'] = '0';
+  $handler->display->display_options['fields']['title']['element_label_type'] = '0';
+  $handler->display->display_options['fields']['title']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['title']['element_default_classes'] = FALSE;
+  $handler->display->display_options['fields']['title']['link_to_node'] = FALSE;
   /* Field: Content: Host */
   $handler->display->display_options['fields']['ansible_host']['id'] = 'ansible_host';
   $handler->display->display_options['fields']['ansible_host']['table'] = 'field_data_ansible_host';
   $handler->display->display_options['fields']['ansible_host']['field'] = 'ansible_host';
   $handler->display->display_options['fields']['ansible_host']['label'] = '';
+  $handler->display->display_options['fields']['ansible_host']['alter']['make_link'] = TRUE;
+  $handler->display->display_options['fields']['ansible_host']['alter']['path'] = 'server/[title]';
   $handler->display->display_options['fields']['ansible_host']['element_type'] = '0';
   $handler->display->display_options['fields']['ansible_host']['element_label_type'] = '0';
   $handler->display->display_options['fields']['ansible_host']['element_label_colon'] = FALSE;
